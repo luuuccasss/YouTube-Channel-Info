@@ -1,4 +1,4 @@
-```markdown
+
 # YouTube Channel Info
 
 This Python script allows you to retrieve information about a YouTube channel, including the number of subscribers, total views, and details of the latest video.
@@ -18,7 +18,7 @@ This Python script allows you to retrieve information about a YouTube channel, i
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-username/youtube-channel-info.git
+   git clone https://github.com/FrenchGuys/YouTube-Channel-Info
    ```
 
 2. Install the required dependencies:
@@ -51,8 +51,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - This script utilizes the [Google API Client Library for Python](https://github.com/googleapis/google-api-python-client) to interact with the YouTube Data API.
 
-## Feedback
-
-If you have any feedback or suggestions, please open an issue or create a pull request. Your contributions are always welcome!
-```
-Copiez-collez simplement ce code dans votre fichier README.md sur GitHub. Si vous avez d'autres questions ou besoin d'aide supplémentaire, n'hésitez pas à demander !
