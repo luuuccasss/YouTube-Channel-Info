@@ -1,15 +1,12 @@
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-# Change 'YOUR_API_KEY' by your Youtube API KEY
-API_KEY = 'YOUR_API_KEY'
+API_KEY = 'AIzaSyBra4WPEkSEmMLvgxuqfx3UGJPlOmABKI0'
 
 def select_language():
     language = input("Choose language (Type 'EN' for English or 'FR' for French): ").upper()
-    if language == 'EN':
-        return 'EN'
-    elif language == 'FR':
-        return 'FR'
+    if language in ['EN', 'FR']:
+        return language
     else:
         print("Invalid language selection. Please choose either 'EN' or 'FR'.")
         return select_language()
@@ -19,8 +16,12 @@ def translate_message(message, language):
         'EN': {
             'enter_channel_name': "Enter the YouTube channel name: ",
             'channel_info': "Channel Information:",
+            'description': "Description: ",
             'subscribers': "Subscribers: ",
             'views': "Views: ",
+            'total_videos': "Total Videos: ",
+            'created_at': "Created at: ",
+            'on_youtube_since': "On YouTube since: ",
             'latest_video': "Latest Video:",
             'title': "Title: ",
             'published_at': "Published at: ",
@@ -31,8 +32,12 @@ def translate_message(message, language):
         'FR': {
             'enter_channel_name': "Entrez le nom de la chaîne YouTube : ",
             'channel_info': "Informations sur la chaîne :",
+            'description': "Description : ",
             'subscribers': "Abonnés : ",
             'views': "Vues : ",
+            'total_videos': "Total de vidéos : ",
+            'created_at': "Créée le : ",
+            'on_youtube_since': "Sur YouTube depuis : ",
             'latest_video': "Dernière vidéo :",
             'title': "Titre : ",
             'published_at': "Publiée le : ",
@@ -58,14 +63,14 @@ def search_channel(channel_name):
             channel_id = channel['id']['channelId']
             return channel_id
     except HttpError as e:
-        print(f"Error : {e}")
+        print(f"Error: {e}")
     return None
 
 def get_channel_info(channel_id):
     youtube = build('youtube', 'v3', developerKey=API_KEY)
     try:
         request = youtube.channels().list(
-            part='snippet, statistics',
+            part='snippet,statistics',
             id=channel_id
         )
         response = request.execute()
@@ -73,12 +78,15 @@ def get_channel_info(channel_id):
         if 'items' in response:
             channel = response['items'][0]
             channel_title = channel['snippet']['title']
+            description = channel['snippet']['description']
             subs_count = int(channel['statistics']['subscriberCount'])
             view_count = int(channel['statistics']['viewCount'])
-            return channel_title, subs_count, view_count
+            video_count = int(channel['statistics']['videoCount'])
+            created_at = channel['snippet']['publishedAt']
+            return channel_title, description, subs_count, view_count, video_count, created_at
     except HttpError as e:
-        print(f"Error : {e}")
-    return None, None, None
+        print(f"Error: {e}")
+    return None, None, None, None, None, None
 
 def get_latest_video_info(channel_id):
     youtube = build('youtube', 'v3', developerKey=API_KEY)
@@ -87,7 +95,8 @@ def get_latest_video_info(channel_id):
             part='snippet',
             channelId=channel_id,
             order='date',
-            type='video'
+            type='video',
+            maxResults=1
         )
         response = request.execute()
 
@@ -100,7 +109,7 @@ def get_latest_video_info(channel_id):
         else:
             return None, None, None
     except HttpError as e:
-        print(f"Error : {e}")
+        print(f"Error: {e}")
         return None, None, None
 
 def format_number(number):
@@ -114,11 +123,15 @@ def main():
         channel_id = search_channel(channel_name)
 
         if channel_id:
-            channel_title, subs_count, view_count = get_channel_info(channel_id)
+            channel_title, description, subs_count, view_count, video_count, created_at = get_channel_info(channel_id)
             if channel_title:
                 print(f"\n{translate_message('channel_info', language)} '{channel_title}':")
+                print(f"{translate_message('description', language)} {description}")
                 print(f"{translate_message('subscribers', language)} {format_number(subs_count)}")
                 print(f"{translate_message('views', language)} {format_number(view_count)}")
+                print(f"{translate_message('total_videos', language)} {format_number(video_count)}")
+                print(f"{translate_message('created_at', language)} {created_at}")
+                print(f"{translate_message('on_youtube_since', language)} {created_at[:10]}")
 
                 video_title, video_published_at, video_url = get_latest_video_info(channel_id)
                 if video_title:
