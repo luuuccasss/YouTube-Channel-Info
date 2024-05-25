@@ -1,7 +1,7 @@
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-API_KEY = 'AIzaSyBra4WPEkSEmMLvgxuqfx3UGJPlOmABKI0'
+API_KEY = 'YOUR-API-KEY'
 
 def select_language():
     language = input("Choose language (Type 'EN' for English or 'FR' for French): ").upper()
