@@ -12,6 +12,7 @@ def select_language():
         return select_language()
 
 def translate_message(message, language):
+    //dont know why i did that it was a lost of time lmao
     translations = {
         'EN': {
             'enter_channel_name': "Enter the YouTube channel name: ",
